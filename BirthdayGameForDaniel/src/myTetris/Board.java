@@ -7,10 +7,18 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import javafx.scene.layout.Background;
 import javax.swing.Timer;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import myTetris.Shape.Tetris;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
+import javax.swing.JFrame;
 
 public class Board extends JPanel implements ActionListener {
 
@@ -33,7 +41,7 @@ public class Board extends JPanel implements ActionListener {
     private Shape curPiece;
     private Tetris[] board;
 
-    public Board(BirthdayTertis parent) {
+    public Board(BirthdayTetris parent) {
         setFocusable(true);
         curPiece = new Shape();
         timer = new Timer(400, this); //a sorcsökkenések közti idő
@@ -41,6 +49,7 @@ public class Board extends JPanel implements ActionListener {
         board = new Tetris[BOARD_WIDTH * BOARD_HEIGHT];
         clearBoard();
         addKeyListener(new MyTTetrisAdapter());
+
     }
 
     public int squareHeight() {
@@ -154,6 +163,7 @@ public class Board extends JPanel implements ActionListener {
         clearBoard();
         newPiece();
         timer.start(); //ez indítja a timert, 400 ms közökkel
+
     }
 
     public void pause() {
@@ -242,6 +252,17 @@ public class Board extends JPanel implements ActionListener {
         pieceDropped();
     }
 
+    @Override
+    protected void paintComponent(Graphics g) {
+        try {
+            super.paintComponent(g);
+            BufferedImage myImage = ImageIO.read(new File("C://Work/github/Angi/proba/proba/BirthdayGameForDaniel/src/resource/together.jpg"));
+            g.drawImage(myImage, 0, 0, null);
+        } catch (IOException ex) {
+            Logger.getLogger(Board.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
     class MyTTetrisAdapter extends KeyAdapter {
 
         @Override
@@ -251,9 +272,10 @@ public class Board extends JPanel implements ActionListener {
             }
 
             int keyCode = ke.getKeyCode();
-            
-            if(keyCode == 'p' || keyCode == 'P')
-            pause();
+
+            if (keyCode == 'p' || keyCode == 'P') {
+                pause();
+            }
 
             if (isPaused) {
                 return;
@@ -267,19 +289,13 @@ public class Board extends JPanel implements ActionListener {
                     tryMove(curPiece, curX + 1, curY);
                     break;
                 case KeyEvent.VK_DOWN:
-                    tryMove(curPiece.rotateRight(), curX, curY);
+                    oneLineDown();
                     break;
                 case KeyEvent.VK_UP:
-                    tryMove(curPiece.rotateLeft(), curX, curY);
+                    tryMove(curPiece.rotateRight(), curX, curY);
                     break;
                 case KeyEvent.VK_SPACE:
                     dropDown();
-                    break;
-                case 'd':
-                    oneLineDown();
-                    break;
-                case 'D':
-                    oneLineDown();
                     break;
             }
         }
