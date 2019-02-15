@@ -3,6 +3,7 @@ package myTetris;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -252,12 +253,13 @@ public class Board extends JPanel implements ActionListener {
         pieceDropped();
     }
 
+    // háttér
     @Override
     protected void paintComponent(Graphics g) {
         try {
             super.paintComponent(g);
             BufferedImage myImage = ImageIO.read(new File("C://Work/github/Angi/proba/proba/BirthdayGameForDaniel/src/resource/together.jpg"));
-            g.drawImage(myImage, 0, 0, null);
+            g.drawImage(myImage.getScaledInstance(250, -1, Image.SCALE_SMOOTH), 0, 0, null);
         } catch (IOException ex) {
             Logger.getLogger(Board.class.getName()).log(Level.SEVERE, null, ex);
         }
