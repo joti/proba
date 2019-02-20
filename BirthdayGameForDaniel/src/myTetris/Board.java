@@ -62,7 +62,7 @@ public class Board extends JPanel implements ActionListener {
     }
 
     public Tetris shapeAt(int x, int y) {
-        return board[y * BOARD_WIDTH + x];
+        return board[(y * BOARD_WIDTH) + x];
     }
 
     private void clearBoard() {
@@ -75,9 +75,8 @@ public class Board extends JPanel implements ActionListener {
         for (int i = 0; i < 4; i++) {
             int x = curX + curPiece.x(i);
             int y = curY - curPiece.y(i);
-            board[y * BOARD_WIDTH + x] = curPiece.getShape();
+            board[(y * BOARD_WIDTH) + x] = curPiece.getShape();
         }
-
         removeFullLines();
 
         if (!isFallingFinished) {
@@ -86,6 +85,7 @@ public class Board extends JPanel implements ActionListener {
     }
 
     public void newPiece() {
+        curPiece = new Shape();
         curPiece.setRandomShape();
         curX = BOARD_WIDTH / 2 + 1;
         curY = BOARD_HEIGHT - 1 + curPiece.minY();
@@ -94,6 +94,7 @@ public class Board extends JPanel implements ActionListener {
             curPiece.setShape(Tetris.NoShape);
             timer.stop();
             isStarted = false;
+            SoundPlayer.soundStop();
             stausBar.setText("Game Over");
         }
     }
@@ -148,7 +149,7 @@ public class Board extends JPanel implements ActionListener {
             for (int i = 0; i < 4; ++i) {
                 int x = curX + curPiece.x(i);
                 int y = curY + curPiece.y(i);
-                drawSquare(g, x * squareWidth(), boardTop + (BOARD_HEIGHT - y - 1) * squareHeight(), curPiece.getShape());
+                drawSquare(g, x * squareWidth(), boardTop + ((BOARD_HEIGHT - y - 1) * squareHeight()), curPiece.getShape());
             }
         }
     }
@@ -176,15 +177,18 @@ public class Board extends JPanel implements ActionListener {
 
         if (isPaused) {
             timer.stop();
+            SoundPlayer.soundStop();
             stausBar.setText("Paused");
         } else {
             timer.start();
+            SoundPlayer.soundPlay();
             stausBar.setText(String.valueOf(numLinesRemoved));
         }
         repaint();
     }
 
     private boolean tryMove(Shape newPiece, int newX, int newY) {
+        
         for (int i = 0; i < 4; ++i) {
             int x = newX + newPiece.x(i);
             int y = newY - newPiece.y(i);
@@ -249,7 +253,7 @@ public class Board extends JPanel implements ActionListener {
             }
             --newY;
         }
-
+        
         pieceDropped();
     }
 
@@ -259,7 +263,7 @@ public class Board extends JPanel implements ActionListener {
         try {
             super.paintComponent(g);
             BufferedImage myImage = ImageIO.read(new File("C://Work/github/Angi/proba/proba/BirthdayGameForDaniel/src/resource/together.jpg"));
-            g.drawImage(myImage.getScaledInstance(250, -1, Image.SCALE_SMOOTH), 0, 0, null);
+            g.drawImage(myImage.getScaledInstance(780, -1, Image.SCALE_SMOOTH), 0, 0, null);
         } catch (IOException ex) {
             Logger.getLogger(Board.class.getName()).log(Level.SEVERE, null, ex);
         }
